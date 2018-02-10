@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-header></v-header>
+    <v-header :seller="seller"></v-header>
     <div class="tab">
       <div class="tab-item">
         <router-link class="link" to="/goods">商品</router-link>
@@ -44,7 +44,6 @@ export default {
       .get('https://easy-mock.com/mock/5a2c0caf5cc9df286973e8d2/seller')
       .then(res => {
         if (res.data.errno === ERR_OK) {
-          console.log(res)
           this.seller = Object.assign({}, this.seller, res.data.data)
           console.log(this.seller)
         }
@@ -54,6 +53,7 @@ export default {
 </script>
 
 <style lang="stylus">
+// css导入
 @import './common/stylus/mixin.styl'
 #app
   .tab
