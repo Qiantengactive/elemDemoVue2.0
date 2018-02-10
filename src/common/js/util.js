@@ -1,3 +1,8 @@
+/**
+ * 解析url参数
+ * @example ?id=12345&a=b
+ * @return Object {id:12345,a:b}
+ */
 export function urlParse() {
     /*window.location 对象所包含的属性
         属性	描述
@@ -12,6 +17,21 @@ export function urlParse() {
      */
     let url = window.location.search
     let obj = {}
-    let reg = /[]/
+    let reg = /[?&][^?&]+=[^?&]+/g
+    //^ 有或者没有
+    //[]表示匹配的字符在[]中，并且只能出现一次
+    //. 代表任意字符，
+    // +代表匹配一个或更多字符，
+    // ？代表非贪婪匹配
     let arr = url.match(reg)
+    // ['?id=12345', '&a=b']
+    if(arr){
+        arr.forEach(objItem=>{
+            let tempArr = objItem.substring(1).split('=')
+            let key = decodeURIComponent(tempArr[0])
+            let value = decodeURIComponent(tempArr[1])
+            obj[key] = val
+        })
+    }
+    return obj
 }

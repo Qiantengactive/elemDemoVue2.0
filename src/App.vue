@@ -19,45 +19,56 @@
 </template>
 
 <script>
-import axios from "axios";
-import heade from "./components/heade/heade";
-const ERR_OK = 0;
+import axios from 'axios'
+import heade from './components/heade/heade'
+import { urlParse } from '@/common/js/util'
+const ERR_OK = 0
 export default {
-    name: "App",
-    data() {
-        return {
-          
-        };
-    },
-    components: {
-        "v-header": heade
-    },
-    created() {
-        axios
-            .get("https://easy-mock.com/mock/5a2c0caf5cc9df286973e8d2/seller")
-            .then(res => {
-              if(res.data.errno=== ERR_OK){
-
-                  console.log(res);
-              }
-            });
+  name: 'App',
+  data () {
+    return {
+      seller: {
+        // 只执行一次
+        id: (() => {
+          let queryParam = urlParse()
+          return queryParam.id
+        })()
+      }
     }
-};
-</script>
-
-<style lang="stylus" rel="stylesheet/stylus" >
-#app {
-  .tab {
-    display: flex;
-    width: 100%;
-    height: 40px;
-    line-height: 40px;
-    border-1px(rgba(7, 17, 27, 0.1));
-
-    .tab-item {
-      flex: 1;
-      text-align: center;
-    }
+  },
+  components: {
+    'v-header': heade
+  },
+  created () {
+    axios
+      .get('https://easy-mock.com/mock/5a2c0caf5cc9df286973e8d2/seller')
+      .then(res => {
+        if (res.data.errno === ERR_OK) {
+          console.log(res)
+          this.seller = Object.assign({}, this.seller, res.data.data)
+          console.log(this.seller)
+        }
+      })
   }
 }
+</script>
+
+<style lang="stylus">
+@import './common/stylus/mixin.styl'
+#app
+  .tab
+    display: flex
+    width: 100%
+    height: 40px
+    line-height: 40px
+    border-1px(rgba(7, 17, 27, 0.1))
+    .tab-item
+      flex: 1
+      text-align: center
+      & > .link
+        display: block
+        font-size: 14px
+        color: rgb(77, 85, 93)
+        &.active
+          color: rgb(240, 20, 20)
 </style>
