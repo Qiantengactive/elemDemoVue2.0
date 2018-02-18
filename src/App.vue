@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <v-header :seller="seller"></v-header>
-    <div class="tab">
+    <div class="tab border-1px">
       <div class="tab-item">
         <router-link class="link" to="/goods">商品</router-link>
       </div>
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="content">
-      content
+      <router-view :seller="seller"></router-view>
     </div>
   </div>
 </template>
