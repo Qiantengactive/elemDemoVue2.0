@@ -31,7 +31,7 @@
                         <span v-show="food.oldPrice" class="old">￥{{food.oldPrice}}</span>
                       </div>
                       <div class="cartcontrol-wrapper">
-                          <!-- 点击添加 -->
+                          <!-- 点击添加购物车 -->
                         <v-cartcontrol @add="addFood" :food="food"></v-cartcontrol>
                       </div>
                   </div>
@@ -151,7 +151,9 @@ export default {
             }
         },
         _drop() {},
-        addFood() {},
+        addFood(target) {
+            alert('自调父addFood');
+        },
         selectFood() {}
     },
     created() {

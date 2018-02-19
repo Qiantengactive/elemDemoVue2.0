@@ -12,6 +12,7 @@
     </div>
 </template>
 <script>
+import Vue from 'vue';
 export default {
     name: 'cartcontrol',
     props: {
@@ -23,8 +24,21 @@ export default {
         }
     },
     methods: {
-        addCart() {},
-        decreaseCart() {}
+        addCart() {
+            if (!this.food.count) {
+                Vue.set(this.food, 'count', 1);
+            } else if (this.food.count > 0) {
+                this.food.count++;
+            } else {
+                this.food.count = 0;
+            }
+            console.log(event);
+            console.log(event.target);
+            this.$emit('add', event.target);
+        },
+        decreaseCart() {
+            this.food.count--;
+        }
     }
 };
 </script>
