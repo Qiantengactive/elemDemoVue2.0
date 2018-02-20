@@ -15,7 +15,7 @@
           <li v-for="(item,index) in goods" class="food-list" :key="index" ref="foodList">
             <h1 class="title">{{item.name}}</h1>
             <ul>
-              <li v-for="(food,index) in item.foods" :key="index" class="food-item border-1px">
+              <li @click="selectFood(food,$event)" v-for="(food,index) in item.foods" :key="index" class="food-item border-1px">
                   <div class="icon">
                       <img :src="food.icon"  width="57" height="57" alt="">
                   </div>
@@ -40,7 +40,8 @@
           </li>
         </ul>
     </div>
-    <v-shopcart refs="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></v-shopcart>
+    <v-shopcart ref="shopcart" :selectFoods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></v-shopcart>
+    <v-food @add="addFood" :food="selectedFood" ref="food"></v-food>
   </div>
 </template>
 <script>
@@ -49,7 +50,10 @@ import BScroll from 'better-scroll';
 import Shopcart from '@/components/shopcart/Shopcart';
 import cartcontrol from '@/components/cartcontrol/cartcontrol';
 import shopcart from '@/components/shopcart/shopcart';
+import food from '@/components/food/food';
+
 const ERR_OK = 0;
+
 export default {
     name: 'goods',
     props: {
@@ -65,13 +69,15 @@ export default {
             goods: [],
             listHeight: [],
             scrollY: 0,
-            selectedFood: {}
+            selectedFood: {},
+            scrollIndex: 0
         };
     },
     components: {
         shopcart: Shopcart,
         'v-cartcontrol': cartcontrol,
-        'v-shopcart': shopcart
+        'v-shopcart': shopcart,
+        'v-food': food
     },
     computed: {
         /* 判断当前index在哪 */
@@ -79,10 +85,8 @@ export default {
             for (let i = 0; i < this.listHeight.length; i++) {
                 let height1 = this.listHeight[i];
                 let height2 = this.listHeight[i + 1];
-                if (
-                    !height2 ||
-                    (this.scrollY >= height1 && this.scrollY <= height2)
-                ) {
+                let a = this.scrollY + 10;
+                if (!height2 || (a >= height1 && a <= height2)) {
                     return i;
                 }
             }
@@ -124,6 +128,10 @@ export default {
            3 不仅在屏幕滑动的过程中，而且在 momentum 滚动动画运行过程中实时派发 scroll 事件。
              如果没有设置该值，其默认值为 0，即不派发 scroll 事件。
         */
+        /* better-scroll 默认会阻止浏览器的原生 click 事件。
+               当设置为 true，better-scroll 会派发一个 click 事件，
+               我们会给派发的 event 参数加一个私有属性 _constructed，值为 true。
+        */
         /* 初始化滚动条数据 */
         _initScroll() {
             this.menusScroll = new BScroll(this.$refs.menuWrapper, {
@@ -133,6 +141,7 @@ export default {
                 probeType: 3,
                 click: true
             });
+            /* 监听一个scroll事件 */
             this.foodsScroll.on('scroll', pos => {
                 this.scrollY = Math.abs(Math.round(pos.y));
                 // console.log(this.scrollY);
@@ -147,14 +156,26 @@ export default {
                 let item = foodList[i];
                 height += item.clientHeight;
                 this.listHeight.push(height);
-                // console.log(this.listHeight);
+                console.log(this.listHeight);
             }
         },
-        _drop() {},
-        addFood(target) {
-            alert('自调父addFood');
+        _drop(target) {
+            /* 父调子方法 */
+            this.$refs.shopcart.drop(target);
         },
-        selectFood() {}
+        addFood(target) {
+            console.log('子调goods父的组件addFood');
+            this._drop(target);
+        },
+        selectFood(food, event) {
+            /* better-scroll 默认会阻止浏览器的原生 click 事件。
+               当设置为 true，better-scroll 会派发一个 click 事件，
+               我们会给派发的 event 参数加一个私有属性 _constructed，值为 true。
+             */
+            // if (!event._construce) {}
+            this.selectedFood = food;
+            this.$refs.food.show();
+        }
     },
     created() {
         this.classMap = [
@@ -253,44 +274,44 @@ export default {
             padding-bottom: 18px
             display: flex
             border-1px(rgba(7,17,27,0.1))
-        &:last-child
-            border-none()
-            margin-bottom:0
-        .icon
-            flex:0 0 57px
-            margin-right: 10px
-        .content
-            flex: 1
-            .name
-                margin: 2px 0 8px 0
-                height: 14px
-                line-height: 14px
-                font-size: 14px
-                color: rgb(7,17,27)
-            .desc, .extra
-                line-hright: 10px
-                font-size: 10px
-                color: rgb(147,153,27)
-            .desc
-                margin-bottom:8px
-                line-height: 12px
-            .extra
-            .count
-                margin-right: 12px
-            .price
-                font-size: 0
-                font-weight: 400
-                line-height: 24px
-                .now
-                    margin-right: 8px
+            &:last-child
+                border-none()
+                margin-bottom:0
+            .icon
+                flex:0 0 57px
+                margin-right: 10px
+            .content
+                flex: 1
+                .name
+                    margin: 2px 0 8px 0
+                    height: 14px
+                    line-height: 14px
                     font-size: 14px
-                    color: rgb(240,20,20)
-                .old
-                    text-decoration: line-through
+                    color: rgb(7,17,27)
+                .desc, .extra
+                    line-hright: 10px
                     font-size: 10px
-                    color: rgb(147,153,159)
-            .cartcontrol-wrapper
-                position:absolute
-                right 0
-                bottom: 12px
+                    color: rgb(147,153,27)
+                .desc
+                    margin-bottom:8px
+                    line-height: 12px
+                .extra
+                .count
+                    margin-right: 12px
+                .price
+                    font-size: 0
+                    font-weight: 400
+                    line-height: 24px
+                    .now
+                        margin-right: 8px
+                        font-size: 14px
+                        color: rgb(240,20,20)
+                    .old
+                        text-decoration: line-through
+                        font-size: 10px
+                        color: rgb(147,153,159)
+                .cartcontrol-wrapper
+                    position:absolute
+                    right 0
+                    bottom: 12px
 </style>

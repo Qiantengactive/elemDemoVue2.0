@@ -1,53 +1,56 @@
 <template>
-<div class="shopcart">
-    <div class="content" @click="toggleList">
-    <div class="content-left">
-        <div class="logo-wrapper">
-        <div class="logo" :class="{highlight: totalCount >0}">
-            <!-- 购物车小车 -->
-            <i class="icon-shopping_cart" :class="{highlight: totalCount>0}"></i>
-        </div>
-        <!--购物车右上角购买数量 -->
-        <div class="num" v-show="totalCount > 0">{{totalCount}}</div>
-        </div>
-        <div class="price" :class="{ highlight:totalPrice > 0 }">￥{{totalPrice}}</div>
-        <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
-    </div>
-    <div class="content-right">
-        <div class="pay" :class="{enough: totalPrice >= minPrice}" @click.stop.prevent="pay">{{payDesc}}</div>
-    </div>
+<div>
+    <div class="shopcart">
+        <div class="content" @click="toggleList">
+            <div class="content-left">
+                <div class="logo-wrapper">
+                <div class="logo" :class="{highlight: totalCount >0}">
+                    <!-- 购物车小车 -->
+                    <i class="icon-shopping_cart" :class="{highlight: totalCount>0}"></i>
+                </div>
+                <!--购物车右上角购买数量 -->
+                <div class="num" v-show="totalCount > 0">{{totalCount}}</div>
+                </div>
+                <div class="price" :class="{ highlight:totalPrice > 0 }">￥{{totalPrice}}</div>
+                <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
+            </div>
+            <div class="content-right">
+                <div class="pay" :class="{enough: totalPrice >= minPrice}" @click.stop.prevent="pay">{{payDesc}}</div>
+            </div>
 
-    <!-- 动画小球部分 -->
-    <div class="ball-container">
-        <div v-for="(ball,index) in balls" :key="index">
-        <transition name="drop" @before-enter="beforeDrop" @enter="dropping" @after-enter="afterDrop">
-            <div v-show="ball.show" class="ball">
-                <div class="inner inner-hook"></div>
+            <!-- 动画小球部分 -->
+            <div class="ball-container">
+                <div v-for="(ball,index) in balls" :key="index">
+                <transition name="drop" @before-enter="beforeDrop" @enter="dropping" @after-enter="afterDrop">
+                    <div v-show="ball.show" class="ball">
+                        <div class="inner inner-hook"></div>
+                    </div>
+                </transition>
+                </div>
             </div>
-        </transition>
+            <!-- 购物车页面 -->
+            <transition name="fold">
+                <div class="shopcart-list" v-show="listShow">
+                    <div class="list-header">
+                        <h1 class="title">购物车</h1>
+                        <div class="empty" @click="empty">清空</div>
+                    </div>
+                    <div class="list-content" ref="listContent">
+                        <ul>
+                            <li class="food" v-for="(foodItem,index) in selectFoods" :key="index">
+                                <span class="name">{{foodItem.name}}</span>
+                                <div class="price">
+                                    <span>￥{{foodItem.price * foodItem.count}}</span>
+                                </div>
+                                <div class="cartcontrol-wrapper">
+                                    <v-cartcontrol @add="addFood" :food="foodItem"></v-cartcontrol>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </transition>
         </div>
-    </div>
-    <transition name="fold">
-        <div class="shopcart-list" v-show="listShow">
-            <div class="list-header">
-                <h1 class="title">购物车</h1>
-                <div class="empty" @click="empty">清空</div>
-            </div>
-            <div class="list-content" ref="listContent">
-                <ul>
-                    <li class="food border-1px" v-for="(foodItem,index) in selectFoods" :key="index">
-                        <span class="name">{{foodItem.name}}</span>
-                        <div class="price">
-                            <span>￥{{foodItem.price * foodItem.count}}</span>
-                        </div>
-                        <div class="cartcontrol-wrapper">
-                            <v-cartcontrol @add="addFood" :food="foodItem"></v-cartcontrol>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </transition>
     </div>
     <!-- 购物车列表显示后背景虚化页面 -->
     <transition name="fade">
@@ -56,6 +59,7 @@
 </div>
 </template>
 <script>
+import BScroll from 'better-scroll';
 import cartcontrol from '@/components/cartcontrol/cartcontrol';
 export default {
     props: {
@@ -92,6 +96,7 @@ export default {
     },
     computed: {
         totalPrice() {
+            console.log('我是shopcart购物车组件中的totalPrice');
             let total = 0;
             this.selectFoods.forEach(food => {
                 total += food.price * food.count;
@@ -100,6 +105,7 @@ export default {
         },
         /* 计算订单总个数 */
         totalCount() {
+            console.log('我是shopcart购物车组件中的totalCount');
             let count = 0;
             this.selectFoods.forEach(food => {
                 count += food.count;
@@ -107,6 +113,7 @@ export default {
             return count;
         },
         payDesc() {
+            console.log('我是shopcart购物车组件中的payDesc');
             if (this.totalPrice === 0) {
                 return `￥${this.minPrice}起送`;
             } else if (this.totalPrice < this.minPrice) {
@@ -117,10 +124,33 @@ export default {
             }
         },
         listShow() {
-            return true;
+            console.log('我是shopcart购物车组件中的listShow');
+            return this.listShow1();
         }
     },
     methods: {
+        listShow1() {
+            /* 没点单 fold为true */
+            if (!this.totalCount) {
+                this.fold = true;
+                return false;
+            }
+            let show = !this.fold;
+            if (show) {
+                this.$nextTick(() => {
+                    // alert('show' + show);
+                    if (!this.scroll) {
+                        this.scroll = new BScroll(this.$refs.listContent, {
+                            click: true
+                        });
+                    } else {
+                        /* 重新计算 better-scroll，当 DOM 结构发生变化的时候务必要调用确保滚动的效果正常。 */
+                        this.scroll.refresh();
+                    }
+                });
+            }
+            return show;
+        },
         toggleList() {
             if (!this.totalCount) {
                 return false;
@@ -151,7 +181,7 @@ export default {
                     // 将点击的小球Dom存入ball数组中
                     ball.el = el;
                     this.dropBalls.push(ball);
-                    console.log(this.dropBalls.length);
+                    // console.log(this.dropBalls.length);
                     return;
                 }
             }
@@ -161,18 +191,45 @@ export default {
             while (count--) {
                 let ball = this.balls[count];
                 if (ball.show) {
-                    let rectangleballele
+                    /* 获取小球的相对于视口的位移(小球高度) */
+                    let rect = ball.el.getBoundingClientRect();
+                    let x = rect.left - 32;
+                    let y = -(window.innerHeight - rect.top - 22);
+                    el.style.display = '';
+                    el.style.webkitTransform = `translate3d(0,${y}px,0)`;
+                    el.style.transform = `translate3d(0,${y}px,0)`;
+                    let inner = el.getElementsByClassName('inner-hook')[0];
+                    inner.style.webkitTransform = `translate3d(${x}px,0,0)`;
+                    inner.style.transform = `translate3d(${x}px,0,0)`;
+                    console.log('beforeDrop');
                 }
             }
-            alert('beforeDrop');
         },
-        dropping() {
-            alert('dropping');
+        dropping(el, done) {
+            /* eslint-disable no-unused-vars */
+            let rf = el.offsetHeight; // 浏览器重绘
+            this.$nextTick(() => {
+                el.style.webkitTransform = 'translate3d(0,0,0)';
+                el.style.transform = 'translate3d(0,0,0)';
+                let inner = el.getElementsByClassName('inner-hook')[0];
+                inner.style.webkitTransform = 'translate3d(0,0,0)';
+                inner.style.transform = 'translate3d(0,0,0)';
+                el.addEventListener('transitionend', done);
+            });
         },
-        afterDrop() {
-            alert('afterDrop');
+        afterDrop(el) {
+            /* shift 删除数组
+            shift() 方法用于把数组的第一个元素从其中删除，并返回第一个元素的值。
+            如果数组是空的，那么 shift() 方法将不进行任何操作，返回 undefined 值。
+            */
+            let ball = this.dropBalls.shift();
+            if (ball) {
+                ball.show = false;
+                el.style.display = 'none';
+            }
         },
         addFood(target) {
+            console.log('子调shopcart父的组件addFood');
             this.drop(target);
         }
     }
@@ -269,17 +326,24 @@ export default {
             left: 32px
             bottom: 22px
             z-index:1
+            transition： all 0.4s cubic-bezier(0.49,-0.29,0.75,0.41)
             .inner
                 width: 16px
                 height: 16px
                 border-radius: 50%
                 background: rgb(0,160,220)
+                transition: all 0.4s linear
     .shopcart-list
         position: absolute
         top: 0
         left: 0
         z-index: -1
         width: 100%
+        transform: translate3d(0,-100%,0)
+        &.fold-enter-active, &.fold-leave-active
+            transition: all 0.5s
+        &.fold-enter, &.fold-leave-active
+            transform: translate3d(0,0,0)
         .list-header
             padding: 0 18px
             height: 40px
@@ -296,17 +360,15 @@ export default {
                 color: rgb(7,17,27)
         .list-content
             padding: 0 18px
-            max-height:217px
+            max-height:200px
             background-color:#fff
             overflow: hidden
             .food
                 position: absolute
-                right: 90px
-                bottom: 12px
-                line-height: 24px
-                font-size: 14px
-                font-weight: 700
-                color: rgb(240,20,20)
+                padding: 12px 0
+                box-sizing: border-box
+                border-1px(rgba(7, 17, 27, 0.1))
+                border-none()
                 .name
                     line-height: 14px
                     font-size: 14px
@@ -323,4 +385,20 @@ export default {
                     position: absolute
                     right: 0
                     bottom: 6px
+.list-mask
+    position: fixed
+    left: 0
+    top: 0
+    width: 100%
+    height: 100%
+    backdrop-filter: blur(10px)
+    // filter: blur(10px)
+    z-index: 3
+    opacity: 1
+    background: rgba(7,17,27,0.6)
+    &.fade-enter-active, &.fade-leave-active
+        transition: all 0.5s
+    &.fade-enter, &.fade-leave-active
+        opacity: 0
+        background: rgba(7,17,27,0)
 </style>

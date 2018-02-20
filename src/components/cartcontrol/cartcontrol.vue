@@ -32,8 +32,9 @@ export default {
             } else {
                 this.food.count = 0;
             }
-            console.log(event);
-            console.log(event.target);
+            console.log('cartcontrol页面的addCart');
+            // console.log(event);
+            // console.log(event.target);
             this.$emit('add', event.target);
         },
         decreaseCart() {
@@ -49,14 +50,21 @@ export default {
     display: inline-block
     padding: 6px
     opacity: 1
+    transform: translate3d(0,0,0)
     .icon-remove_circle_outline
       display:inline-block
       line-height: 24px
-      font-size: 10px
+      font-size: 24px
       color: rgb(0,160,220)
-  &.move-enter-active, &.move-leave-active
-  &.move-enter, &.move-leave-active
-    opacity: 0
+      transition: all 0.3s linear
+      transform: rotate(0)
+    &.move-enter-active, &.move-leave-active
+        transition: all 0.3s linear
+    &.move-enter, &.move-leave-active
+        opacity: 0
+        transform: translate3d(24px,0,0)
+        .icon-remove_circle_outline
+            transform: rotate(180deg)
   .cart-count
     vertical-align: top
     display: inline-block
