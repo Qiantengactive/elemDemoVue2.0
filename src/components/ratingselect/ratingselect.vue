@@ -1,18 +1,18 @@
 <template>
-  <div class="tatingselect">
+  <div class="ratingselect">
     <!-- 商品评价选择组件 -->
     <div class="rating-type border-1px">
-      <span class="block positive" :class="{active: selectType === 2}">{{desc.all}}
-        <span>{{ratings.length}}</span>
+      <span @click="select(2,$event)" class="block positive" :class="{active: selectType === 2}">{{desc.all}}
+        <span class="count">{{ratings.length}}</span>
       </span>
-      <span class="block positive" :class="{active: selectType === 0}">{{desc.positive}}
-        <span>{{positives.length}}</span>
+      <span @click="select(0,$event)" class="block positive" :class="{active: selectType === 0}">{{desc.positive}}
+        <span class="count">{{positives.length}}</span>
       </span>
-      <span class="block negative" :class="{active: selectType === 1}">{{desc.negative}}
-        <span>{{negatives.length}}</span>
+      <span @click="select(1,$event)" class="block negative" :class="{active: selectType === 1}">{{desc.negative}}
+        <span class="count">{{negatives.length}}</span>
       </span>
     </div>
-    <div @click="toggleContent" class="switch">
+    <div @click="toggleContent" class="switch" :class="{on:onlyContent === true}">
       <i class="icon-check_circle"></i>
       <span class="text">只看有内容的评价</span>
     </div>
@@ -60,8 +60,14 @@ export default {
         }
     },
     methods: {
-        select(type, event) {},
-        toggleContent(event) {}
+        select(type, event) {
+            /* 呼叫父亲的select方法 */
+            this.$emit('select', type);
+        },
+        toggleContent(event) {
+            /* 呼叫父亲的toggle方法 */
+            this.$emit('toggle');
+        }
     }
 };
 </script>
@@ -91,7 +97,7 @@ export default {
           &.active
             background-color: rgb(0,160,220)
         &.negative
-          background-color: rgb(77,85,93,0.2)
+          background-color: rgba(77,85,93,0.2)
           &.active
             background-color:rgb(77,85,93)
     .switch
