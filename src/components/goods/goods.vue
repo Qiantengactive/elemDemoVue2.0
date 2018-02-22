@@ -207,7 +207,7 @@ export default {
 <style lang="stylus" scoped>
 @import '../../common/stylus/mixin'
 .goods
-    position:absolute
+    position: absolute
     display: flex
     width: 100%
     top: 174px
