@@ -26,7 +26,7 @@
         </div>
       </div>
       <v-split></v-split>
-      <v-ratingSelect @select="selectRating" @toggle="toggleContent" @selectType="selectType" :onlyContent="onlyContent" :ratings="ratings"></v-ratingSelect>
+      <v-ratingSelect @select="selectRating" @toggle="toggleContent" @selectType="selectType" :onlyContent="onlyContent" :ratings="ratings" :selectType="selectType"></v-ratingSelect>
       <div class="rating-wrapper">
         <ul>
           <li v-for="(rating,index) in ratings" :key="index" v-show="needShow(rating.rateType,rating.text)" class="rating-item border-1px">
@@ -91,6 +91,7 @@ export default {
       this.$nextTick(() => {
         this.scroll.refresh()
       })
+      console.log(this.selectType);
     },
     toggleContent () {
       this.onlyContent = !this.onlyContent
@@ -103,7 +104,7 @@ export default {
         return false
       }
       if (this.selectType === ALL) {
-        return false
+        return true
       } else {
         return type === this.selectType
       }
