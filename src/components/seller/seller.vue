@@ -62,8 +62,8 @@
   </div>
 </template>
 <script>
-// import BScroll from 'better-scroll'
-import { } from '@/common/js/local'
+import BScroll from 'better-scroll'
+import { saveToLocal, loadFromLocal } from '@/common/js/local'
 import star from '@/components/star/star'
 import split from '@/components/split/split'
 export default {
@@ -86,12 +86,25 @@ export default {
   },
   data () {
     return {
-      favorite: (() => { })()
+      favorite: (() => {
+        return loadFromLocal(this.seller.id, 'favorite', false)
+      })()
     }
   },
   methods: {
-    toggleFavorite () { },
-    _initScroll () { },
+    toggleFavorite () {
+      this.favorite = !this.favorite
+      saveToLocal(this.seller.id, 'favorite', this.favorite)
+    },
+    _initScroll () {
+      if (!this.scroll) {
+        this.scroll = new BScroll(this.$refs.seller, {
+          click: true
+        })
+      } else {
+        this.scroll.refresh()
+      }
+    },
     _initPics () { }
   },
   watch: {
@@ -263,4 +276,3 @@ export default {
       &:last-child
         border-none()
 </style>
-
