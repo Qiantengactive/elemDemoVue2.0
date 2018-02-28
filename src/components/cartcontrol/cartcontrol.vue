@@ -43,42 +43,79 @@ export default {
     }
 };
 </script>
-<style lang="stylus" scoped>
+<style lang="stylus">
+// .cartcontrol
+//   font-size: 0
+//   .cart-decrease
+//     display: inline-block
+//     padding: 6px
+//     opacity: 1
+//     transform: translate3d(0,0,0)
+//     .icon-remove_circle_outline
+//       display:inline-block
+//       line-height: 24px
+//       font-size: 24px
+//       color: rgb(0,160,220)
+//       transition: all 0.3s linear
+//       transform: rotate(0)
+//     &.move-enter-active, &.move-leave-active
+//         transition: all 0.3s linear
+//     &.move-enter, &.move-leave-active
+//         opacity: 0
+//         transform: translate3d(24px,0,0)
+//         .icon-remove_circle_outline
+//             transform: rotate(180deg)
+//   .cart-count
+//     vertical-align: top
+//     display: inline-block
+//     padding-top: 6px
+//     width: 12px
+//     line-height: 24px
+//     text-align: center
+//     font-size: 10px
+//     color:rgb(147,153,159)
+//   .cart-add
+//     display: inline-block
+//     padding: 6px
+//     .icon-add_circle
+//       line-height: 24px
+//       font-size: 24px
+//       color: rgb(0,160,220)
 .cartcontrol
-  font-size: 0
-  .cart-decrease
-    display: inline-block
-    padding: 6px
-    opacity: 1
-    transform: translate3d(0,0,0)
-    .icon-remove_circle_outline
-      display:inline-block
-      line-height: 24px
-      font-size: 24px
-      color: rgb(0,160,220)
-      transition: all 0.3s linear
-      transform: rotate(0)
-    &.move-enter-active, &.move-leave-active
-        transition: all 0.3s linear
-    &.move-enter, &.move-leave-active
-        opacity: 0
-        transform: translate3d(24px,0,0)
+    font-size 0
+    .cart-decrease
+      display inline-block
+      padding 6px
+      opacity: 1
+      transform: translate3d(0, 0, 0)
+      .icon-remove_circle_outline
+        display inline-block
+        line-height 24px
+        font-size 24px
+        color rgb(0, 160, 220)
+        transition: all .3s linear
+        transform: rotate(0)
+      &.move-enter-active, &.move-leave-active
+        transition all .3s linear
+      &.move-enter, &.move-leave-active
+        opacity 0
+        transform translate3d(24px, 0, 0)
         .icon-remove_circle_outline
-            transform: rotate(180deg)
-  .cart-count
-    vertical-align: top
-    display: inline-block
-    padding-top: 6px
-    width: 12px
-    line-height: 24px
-    text-align: center
-    font-size: 10px
-    color:rgb(147,153,159)
-  .cart-add
-    display: inline-block
-    padding: 6px
-    .icon-add_circle
-      line-height: 24px
-      font-size: 24px
-      color: rgb(0,160,220)
+          transform rotate(180deg)
+    .cart-count
+      vertical-align top
+      display inline-block
+      padding-top 6px
+      width 12px
+      line-height 24px
+      text-align center
+      font-size 10px
+      color rgb(147, 153, 159)
+    .cart-add
+      display inline-block
+      padding 6px
+      .icon-add_circle
+        line-height 24px
+        font-size 24px
+        color rgb(0, 160, 220)
 </style>
