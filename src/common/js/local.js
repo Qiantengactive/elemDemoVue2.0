@@ -25,10 +25,6 @@ export function loadFromLocal(id, key, def) {
     if (!seller) {
         return def
     }
-    seller = JSON.parse(seller)[id]
-    if (!seller) {
-        return def
-    }
     let ret = seller[key]
     return ret || def
 }
