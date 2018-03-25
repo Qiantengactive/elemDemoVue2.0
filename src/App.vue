@@ -24,7 +24,7 @@ import heade from './components/heade/heade'
 import { urlParse } from '@/common/js/util'
 const ERR_OK = 0
 export default {
-  name: 'App',
+  name: 'App', // 导出后的name属性
   data () {
     return {
       seller: {

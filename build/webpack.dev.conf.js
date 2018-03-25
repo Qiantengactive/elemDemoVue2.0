@@ -49,7 +49,6 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     },
     before(app) {
       //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
-      //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
       app.get('/api/Seller', (req, res) => {
         res.json({
           errno: 0,
@@ -137,6 +136,7 @@ var goods = appData.goods
 var ratings = appData.ratings
 var apiRoutes = express.Router()
 app.use('/api', apiRoutes)
+/* 老版本写法 */
 // apiRoutes.get('/seller', function (req, res) {
 //   res.json({
 //     errno: 0,

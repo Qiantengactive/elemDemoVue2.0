@@ -8,8 +8,8 @@ Vue.config.productionTip = false
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
+  el: '#app', // vue父实例的挂载点
   router,
-  components: { App },
-  template: '<App/>'
+  components: { App }, // 主组件的模板
+  template: '<App/>' // 使用导入的App,es6对象写法
 })
